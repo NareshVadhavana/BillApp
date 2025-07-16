@@ -1,33 +1,73 @@
-import express, { Request, Response, NextFunction } from 'express';
 import 'dotenv/config';
+import express from 'express';
+import MongoDBConnection from './connections/mongodb.connection';
+import Logger from './services/logger/logger.service';
+import controllers from './api';
+import * as http from 'http';
 import { routeAccessLogger } from './middleware/logger.middleware';
-import { logger } from './services/logger/logger.service';
+import { ControllerI } from './interfaces/common.interface';
+import { errorResponse } from './middleware/apiResponse.middleware';
 
-const app = express();
-const PORT = process.env.PORT;
+class App {
+  public app: express.Application;
 
-// log every request
-app.use(routeAccessLogger);
+  constructor() {
+    this.app = express();
 
-// global error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err.stack || err.message);
-  res.status(500).send('Something broke!');
-});
+    Promise.all([
+      this.connectToTheDatabase(),
+      this.initializeMiddleware(),
+      this.initializeControllers(),
+      this.initializeErrorHandling(),
+    ]).then(() => {
+      this.listen();
+    });
+  }
 
-app.get('/', (req, res) => {
-  res.send('Hello from Express + TypeScript!');
-});
+  private async connectToTheDatabase() {
+    await MongoDBConnection.init();
+  }
 
-app.get('/error', () => {
-  throw new Error('Test error');
-});
+  private async initializeMiddleware() {
+    this.app.use('/export', express.static('src/download'));
+    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(express.json({ limit: '50mb' }));
+    this.app.use(routeAccessLogger);
+  }
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err.stack || err.message);
-  res.status(500).send('Something went wrong...');
-});
+  private async initializeErrorHandling() {
+    this.app.use(errorResponse);
+  }
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
-});
+  private async initializeControllers() {
+    controllers.forEach((controller: ControllerI) => {
+      this.app.use('/', controller.router);
+    });
+  }
+
+  public async listen(): Promise<void> {
+    const PORT = process.env.PORT;
+    let server = http.createServer(this.app);
+
+    server.listen(PORT, () => {
+      Logger.info(`App listening on the PORT ${PORT}`);
+    });
+  }
+}
+
+try {
+  new App();
+} catch (e: any) {
+  Logger.error(`Error on project startup: ${e.message}`);
+}
+
+process
+  .on('unhandledRejection', (response, p) => {
+    Logger.error(response);
+    Logger.error(p);
+  })
+  .on('uncaughtException', (err) => {
+    Logger.error(err);
+  });
+
+export default App;

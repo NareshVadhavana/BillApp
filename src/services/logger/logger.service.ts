@@ -13,7 +13,7 @@ const currentMonth = now.getMonth() + 1;
 const finalMonth = ('0' + currentMonth).slice(-2);
 const todayFileName = now.getFullYear() + '-' + finalMonth + '-' + now.getDate();
 
-export const logger = createLogger({
+const logger = createLogger({
   level: 'info',
   format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), errors({ stack: true }), logFormat),
   transports: [
@@ -32,3 +32,5 @@ logger.add(
     format: format.simple(),
   })
 );
+
+export default logger;
