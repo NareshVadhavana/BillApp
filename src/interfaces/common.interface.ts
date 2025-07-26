@@ -11,3 +11,12 @@ export interface APIResponseI {
   message: string;
   data?: any;
 }
+
+export interface TokenDataI {
+  token: string;
+  expiresIn: number;
+}
+
+export interface DataStoredInTokenI {
+  _id: string;
+}

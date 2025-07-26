@@ -4,6 +4,7 @@ const ERROR_MESSAGES = {
   NOT_ACCESS: 'You have not right to perform this action.',
 
   COMMON: {
+    NOT_FOUND: 'The :attribute not found.',
     REQUIRED: 'The :attribute field is required.',
     INVALID: 'The selected :attribute is invalid.',
     NUMERIC: 'The :attribute must be a number.',
