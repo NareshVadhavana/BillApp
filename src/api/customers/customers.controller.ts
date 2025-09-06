@@ -6,19 +6,20 @@ import {
   ERROR_MESSAGES,
   USERS_CONSTANT,
 } from '../../constants';
-import { ControllerI } from '../../interfaces/common.interface';
+import { ControllerI, RequestWithUserI } from '../../interfaces/common.interface';
 import { successResposne } from '../../middleware/apiResponse.middleware';
 import LoggerService from '../../services/logger/logger.service';
 import MongoService from '../../services/mongo.service';
-import UserModel from './users.model';
 import CompanyProfileModel from '../companyProfile/companyProfile.model';
-import * as bcrypt from 'bcrypt';
+import CustomerModel from './customers.model';
 import authMiddleware from '../../middleware/auth.middleware';
 import roleMiddleware from '../../middleware/role.middleware';
+import CustomerValidation from './customer.validation';
 
-class UserController implements ControllerI {
-  public path = `/${ROUTES.USERS}`;
+class CustomerController implements ControllerI {
+  public path = `/${ROUTES.CUSTOMERS}`;
   public router = Router();
+  private validation = new CustomerValidation();
 
   constructor() {
     this.initializeRoutes();
@@ -28,16 +29,17 @@ class UserController implements ControllerI {
     this.router.post(
       `${this.path}`,
       authMiddleware,
-      roleMiddleware([USERS_CONSTANT.ROLE.ADMIN]),
-      this.createUser
+      roleMiddleware([USERS_CONSTANT.ROLE.COMPANY, USERS_CONSTANT.ROLE.COMPANY_STAFF]),
+      this.validation.createCustomerValidation(),
+      this.createCustomer
     );
   }
 
-  private createUser = async (request: Request, response: Response, next: NextFunction) => {
+  private createCustomer = async (request: Request, response: Response, next: NextFunction) => {
     try {
-      const { username, companyId, phoneNumber, password } = request.body;
-
-      const defaultRole = 'Admin';
+      const { name, phoneNumber, address } = request.body;
+      const req = request as RequestWithUserI;
+      const companyId = req.user.companyId;
 
       const company = await MongoService.findOne(CompanyProfileModel, {
         query: { _id: companyId },
@@ -47,32 +49,26 @@ class UserController implements ControllerI {
         throw new Error(ERROR_MESSAGES.COMMON.NOT_FOUND.replace(':attribute', 'company details'));
       }
 
-      // check user already exists or not
-      const isPhoneNumberAlreadyExists = await MongoService.findOne(UserModel, {
-        query: { phoneNumber: phoneNumber },
+      // check customer phone already exists or not
+      const isPhoneNumberAlreadyExists = await MongoService.findOne(CustomerModel, {
+        query: { phoneNumber: phoneNumber, companyId: companyId },
         select: 'phoneNumber',
       });
 
       if (isPhoneNumberAlreadyExists) {
-        throw new Error(ERROR_MESSAGES.COMMON.ALREADY_EXISTS.replace(':attribute', 'user'));
+        throw new Error(ERROR_MESSAGES.COMMON.ALREADY_EXISTS.replace(':attribute', 'customer'));
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const user = await MongoService.create(UserModel, {
-        insert: { username, companyId, role: defaultRole, phoneNumber, password: hashedPassword },
+      const customer = await MongoService.create(CustomerModel, {
+        insert: { name, companyId, phoneNumber, address },
       });
-
-      const userResponseData = user.toObject();
-
-      delete userResponseData.password;
 
       return successResposne(
         {
-          message: SUCCESS_MESSAGES.COMMON.CREATE_SUCCESS.replace(':attribute', 'User'),
+          message: SUCCESS_MESSAGES.COMMON.CREATE_SUCCESS.replace(':attribute', 'Customer'),
           status: SUCCESS_MESSAGES.SUCCESS,
           statusCode: HTTP_STATUS_CODES.CREATED,
-          data: userResponseData,
+          data: customer,
         },
         request,
         response,
@@ -86,4 +82,4 @@ class UserController implements ControllerI {
   };
 }
 
-export default UserController;
+export default CustomerController;

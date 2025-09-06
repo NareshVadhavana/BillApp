@@ -1,0 +1,224 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Create Invoice</h3>
+  <a href="/customers/new" class="btn btn-sm btn-secondary">+ Create Customer</a>
+</div>
+
+<form id="invoiceForm" action="/invoices/create" method="POST">
+  <!-- Invoice Info -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label">Invoice #</label>
+      <input type="text" name="invoiceNumber" value="<%= nextInvoiceNumber %>" class="form-control" readonly>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Issue Date</label>
+      <input type="date" name="invoiceIssueDate" value="<%= new Date().toISOString().slice(0,10) %>" class="form-control">
+    </div>
+  </div>
+
+  <!-- Customer Info -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label">Customer Phone</label>
+      <input type="text" id="customerPhone" name="customerPhoneNumber" class="form-control" placeholder="Search phone...">
+      <div id="customerDropdown" class="list-group"></div>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Customer Name</label>
+      <input type="text" id="customerName" name="customerName" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Customer Address</label>
+      <input type="text" id="customerAddress" name="customerAddress" class="form-control">
+    </div>
+  </div>
+
+  <!-- Items Section -->
+  <h5>Items</h5>
+  <div id="itemsBody">
+    <div class="card mb-3 p-3 item-row">
+      <div class="row mb-2">
+        <div class="col-md-6">
+          <label class="form-label">Item Name</label>
+          <input type="text" name="items[0][itemName]" class="form-control">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Description</label>
+          <input type="text" name="items[0][description]" class="form-control">
+        </div>
+      </div>
+      <div class="row align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Price</label>
+          <input type="number" name="items[0][unitPrice]" class="form-control price" step="0.01">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Quantity</label>
+          <input type="number" name="items[0][quantity]" class="form-control qty">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Total</label>
+          <input type="number" name="items[0][itemTotalPrice]" class="form-control itemTotal" readonly>
+        </div>
+        <div class="col-md-3 text-end">
+          <button type="button" class="btn btn-danger mt-4 removeItem">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" id="addItem" class="btn btn-sm btn-secondary">+ Add Item</button>
+
+  <!-- Totals -->
+  <div class="row mt-4">
+    <div class="col-md-2">
+      <label class="form-label">Subtotal</label>
+      <input type="number" name="subTotal" id="subTotal" class="form-control" readonly>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">SGST (9%)</label>
+      <input type="number" name="sgstTax" id="sgstTax" class="form-control" value="0">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">CGST (9%)</label>
+      <input type="number" name="cgstTax" id="cgstTax" class="form-control" value="0">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Other Tax</label>
+      <input type="number" name="otherTax" id="otherTax" class="form-control" value="0">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Total Tax</label>
+      <input type="number" name="totalTax" id="totalTax" class="form-control" readonly>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Discount</label>
+      <input type="number" name="discount" id="discount" class="form-control" value="0">
+    </div>
+    <div class="col-md-3 mt-3">
+      <label class="form-label">Grand Total</label>
+      <input type="number" name="grandTotal" id="grandTotal" class="form-control" readonly>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="mt-4">
+    <button type="submit" class="btn btn-primary">Save Invoice</button>
+  </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  let itemIndex = 1;
+
+  // Add new item row
+  $('#addItem').click(function() {
+    $('#itemsBody').append(`
+      <div class="card mb-3 p-3 item-row">
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <label class="form-label">Item Name</label>
+            <input type="text" name="items[${itemIndex}][itemName]" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Description</label>
+            <input type="text" name="items[${itemIndex}][description]" class="form-control">
+          </div>
+        </div>
+        <div class="row align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">Price</label>
+            <input type="number" name="items[${itemIndex}][unitPrice]" class="form-control price" step="0.01">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" name="items[${itemIndex}][quantity]" class="form-control qty">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Total</label>
+            <input type="number" name="items[${itemIndex}][itemTotalPrice]" class="form-control itemTotal" readonly>
+          </div>
+          <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-danger mt-4 removeItem">Remove</button>
+          </div>
+        </div>
+      </div>
+    `);
+    itemIndex++;
+  });
+
+  // Remove item row
+  $(document).on('click', '.removeItem', function() {
+    $(this).closest('.item-row').remove();
+    calculateTotals();
+  });
+
+  // Auto calculate totals
+  $(document).on('input', '.price, .qty, #sgstTax, #cgstTax, #otherTax, #discount', function() {
+    calculateTotals();
+  });
+
+  function calculateTotals() {
+    let subtotal = 0;
+
+    $('#itemsBody .item-row').each(function() {
+      let price = parseFloat($(this).find('.price').val()) || 0;
+      let qty = parseFloat($(this).find('.qty').val()) || 0;
+      let total = price * qty;
+      $(this).find('.itemTotal').val(total.toFixed(2));
+      subtotal += total;
+    });
+
+    $('#subTotal').val(subtotal.toFixed(2));
+
+    let sgst = subtotal * 0.09;
+    let cgst = subtotal * 0.09;
+
+    $('#sgstTax').val(sgst.toFixed(2));
+    $('#cgstTax').val(cgst.toFixed(2));
+
+    let otherTax = parseFloat($('#otherTax').val()) || 0;
+    let discount = parseFloat($('#discount').val()) || 0;
+
+    let totalTax = sgst + cgst + otherTax;
+    $('#totalTax').val(totalTax.toFixed(2));
+
+    let grandTotal = subtotal + totalTax - discount;
+    $('#grandTotal').val(grandTotal.toFixed(2));
+  }
+
+  // Customer search (AJAX demo)
+  $('#customerPhone').on('input', function() {
+    let query = $(this).val();
+    if(query.length > 2) {
+      $.get(`/customers/search?phone=${query}`, function(data) {
+        $('#customerDropdown').empty();
+        data.forEach(c => {
+          $('#customerDropdown').append(
+            `<a href="#" class="list-group-item list-group-item-action" 
+              data-id="${c._id}" 
+              data-name="${c.name}" 
+              data-address="${c.address}" 
+              data-phone="${c.phone}">
+                ${c.phone} - ${c.name}
+             </a>`
+          );
+        });
+      });
+    }
+  });
+
+  // Select customer from dropdown
+  $(document).on('click', '#customerDropdown a', function(e) {
+    e.preventDefault();
+    $('#customerPhone').val($(this).data('phone'));
+    $('#customerName').val($(this).data('name'));
+    $('#customerAddress').val($(this).data('address'));
+    $('#customerDropdown').empty();
+  });
+
+  // Initial totals calc
+  calculateTotals();
+});
+</script>

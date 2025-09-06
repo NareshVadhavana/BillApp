@@ -1,30 +1,20 @@
 import * as mongoose from 'mongoose';
-import { UserI } from './users.interface';
+import { CustomerI } from './customers.interface';
 
-const UserSchema = new mongoose.Schema(
+const CustomerSchema = new mongoose.Schema(
   {
-    username: {
+    name: {
       type: String,
       required: true,
-      index: true,
     },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       index: true,
     },
-    role: {
-      type: String,
-      required: true,
-    },
     phoneNumber: {
       type: String,
       required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      select: false,
     },
     address: {
       type: String,
@@ -40,8 +30,6 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// companyProfileSchema.plugin(mongoosePaginate);
+const CustomerModel = mongoose.model<CustomerI & mongoose.Document>('Customer', CustomerSchema);
 
-const UserModel = mongoose.model<UserI & mongoose.Document>('User', UserSchema);
-
-export default UserModel;
+export default CustomerModel;

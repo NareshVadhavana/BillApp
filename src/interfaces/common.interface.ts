@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
+import { UserI } from '../api/users/users.interface';
 
 export interface ControllerI {
   path: string;
@@ -19,4 +20,8 @@ export interface TokenDataI {
 
 export interface DataStoredInTokenI {
   _id: string;
+}
+
+export interface RequestWithUserI extends Request {
+  user: UserI;
 }

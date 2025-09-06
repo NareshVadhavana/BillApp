@@ -2,6 +2,7 @@ const ERROR_MESSAGES = {
   ERROR: 'error',
   SOMETHING_WENT_WRONG: 'Oops! Something went wrong. Please try again later.',
   NOT_ACCESS: 'You have not right to perform this action.',
+  TOKEN_EXPIRED: 'Token expired.',
 
   COMMON: {
     NOT_FOUND: 'The :attribute not found.',

@@ -7,6 +7,8 @@ import * as http from 'http';
 import { routeAccessLogger } from './middleware/logger.middleware';
 import { ControllerI } from './interfaces/common.interface';
 import { errorResponse } from './middleware/apiResponse.middleware';
+import path from 'path';
+import expressLayouts from 'express-ejs-layouts';
 
 class App {
   public app: express.Application;
@@ -33,6 +35,15 @@ class App {
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(routeAccessLogger);
+
+    // Serve static files (CSS, JS, images)
+    this.app.use(express.static(path.join(process.cwd(), 'src', 'public')));
+
+    // EJS & layouts
+    this.app.use(expressLayouts);
+    this.app.set('layout', 'layouts/layout');
+    this.app.set('view engine', 'ejs');
+    this.app.set('views', path.join(process.cwd(), 'src', 'views'));
   }
 
   private async initializeErrorHandling() {

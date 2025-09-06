@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/header') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/sidebar') %>
+    <div class="main">
+      <%- include('../partials/navbar') %>
+
+      <main class="content">
+        <div class="container-fluid p-0">
+          <%- body %>
+        </div>
+      </main>
+
+      <%- include('../partials/footer') %>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <!-- Add your page-specific scripts in body or via blocks -->
+</body>
+</html>
