@@ -1,0 +1,98 @@
+<div class="invoice-preview-wrapper">
+  <div class="invoice-preview-content">
+    <div class="container my-3" style="max-width: 800px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); font-size: 0.95rem;">
+      <!-- Invoice Header -->
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="text-muted" style="font-size: 0.85rem;">
+          <div><strong>Invoice</strong></div>
+          <div>Invoice #<%= invoice.invoiceNumber ?? '' %></div>
+          <div>Date: <%= new Date(invoice.invoiceIssueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></div>
+        </div>
+        <div>
+          <% if(invoice.companyId?.logoImage){ %>
+            <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 60px;">
+          <% } %>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #eaeaea; margin: 10px 0;"></div>
+
+      <!-- Billed By & Billed To -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <h6 style="margin-bottom: 5px;">Billed By:</h6>
+          <p style="margin-bottom: 3px;"><strong><%= invoice.companyId?.companyName ?? 'Your Company' %></strong></p>
+          <p style="margin-bottom: 3px;"><%= invoice.companyId?.companyAddress ?? '' %></p>
+          <p style="margin-bottom: 3px;"><%= invoice.companyId?.companyPhoneNumber ?? '' %></p>
+        </div>
+        <div class="col-md-6">
+          <h6 style="margin-bottom: 5px;">Billed To:</h6>
+          <p style="margin-bottom: 3px;"><strong><%= invoice.customerName ?? '' %></strong></p>
+          <p style="margin-bottom: 3px;"><%= invoice.customerAddress ?? '' %></p>
+          <p style="margin-bottom: 3px;"><%= invoice.customerPhoneNumber ?? '' %></p>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #eaeaea; margin: 10px 0;"></div>
+
+      <!-- Items Table -->
+      <div class="mb-3">
+        <h6 style="margin-bottom: 8px;">Invoice Details</h6>
+        <table class="table table-sm table-bordered mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Item</th>
+              <th class="text-end">Qty</th>
+              <th class="text-end">Unit Price</th>
+              <th class="text-end">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% invoice.items.forEach(item => { %>
+              <tr>
+                <td><%= item.itemName ?? '' %></td>
+                <td class="text-end"><%= item.quantity ?? 0 %></td>
+                <td class="text-end"><%= (item.unitPrice ?? 0).toFixed(2) %></td>
+                <td class="text-end"><%= ((item.unitPrice ?? 0) * (item.quantity ?? 0)).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="border-top: 1px solid #eaeaea; margin: 10px 0;"></div>
+
+      <!-- Summary -->
+      <div class="row justify-content-end mb-3">
+        <div class="col-md-6 col-lg-4">
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr><td>Subtotal</td><td class="text-end"><%= (invoice.subTotal ?? 0).toFixed(2) %></td></tr>
+              <tr><td>Tax</td><td class="text-end"><%= (invoice.totalTax ?? 0).toFixed(2) %></td></tr>
+              <tr><td>Discount</td><td class="text-end"><%= (invoice.discount ?? 0).toFixed(2) %></td></tr>
+              <tr class="border-top fw-bold"><td>Grand Total</td><td class="text-end"><%= (invoice.grandTotal ?? 0).toFixed(2) %></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #eaeaea; margin: 10px 0;"></div>
+
+      <!-- Notes -->
+      <div style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
+        <h6 style="margin-bottom: 5px;">Notes</h6>
+        <ul style="padding-left: 20px; margin-bottom: 0;">
+          <li>Payment is due by <%= new Date(invoice.invoiceIssueDate).toLocaleString('default', { month: 'long', year: 'numeric' }) %>.</li>
+          <li>Include the invoice number in the payment reference for accurate processing.</li>
+        </ul>
+      </div>
+
+      <div style="border-top: 1px solid #eaeaea; margin: 10px 0;"></div>
+
+      <!-- Footer -->
+      <div class="text-center text-muted" style="font-size: 0.85rem;">
+        <small><%= invoice.companyId?.companyName ?? 'Your Company' %>, Your Country | (+62) 823-4567-8901</small>
+      </div>
+    </div>
+  </div>
+</div>

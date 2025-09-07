@@ -11,6 +11,12 @@ const companyProfileSchema = new mongoose.Schema(
     logoImage: {
       type: String,
     },
+    companyAddress: {
+      type: String,
+    },
+    companyPhoneNumber: {
+      type: String,
+    },
     termsAndConditions: {
       type: String,
     },

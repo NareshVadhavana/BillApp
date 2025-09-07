@@ -32,7 +32,7 @@ class App {
 
   private async initializeMiddleware() {
     this.app.use('/export', express.static('src/download'));
-    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(routeAccessLogger);
 

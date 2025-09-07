@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
   <%- include('../partials/header') %>
-<body>
-  <div class="wrapper">
-    <%- include('../partials/sidebar') %>
-    <div class="main">
-      <%- include('../partials/navbar') %>
+  <body>
+    <!-- Toast Container - Add here so it's available in all pages -->
+    <div id="customToastContainer" class="custom-toast-container"></div>
 
-      <main class="content">
-        <div class="container-fluid p-0">
-          <%- body %>
-        </div>
-      </main>
+    <div class="wrapper">
+      <%- include('../partials/sidebar') %>
+      <div class="main">
+        <%- include('../partials/navbar') %>
 
-      <%- include('../partials/footer') %>
+        <main class="content">
+          <div class="container-fluid p-0"><%- body %></div>
+        </main>
+
+        <%- include('../partials/footer') %>
+      </div>
     </div>
-  </div>
 
-  <script src="/js/app.js"></script>
-  <!-- Add your page-specific scripts in body or via blocks -->
-</body>
+    <script src="/js/app.js"></script>
+    <script src="/js/helpers.js"></script>
+    <script src="/js/global.js"></script>
+    <!-- Add your page-specific scripts in body or via blocks -->
+
+    <!-- Custom Preview Overlay (place near the end of body) -->
+    <div id="invoicePreviewOverlay">
+      <div id="invoicePreviewBox">
+        <button id="closePreview" title="Close">&times;</button>
+        <div id="invoicePreviewContent"></div>
+      </div>
+    </div>
+  </body>
 </html>

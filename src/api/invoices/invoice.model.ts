@@ -41,6 +41,7 @@ const InvoiceSchema = new mongoose.Schema(
     },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'CompanyProfile',
       required: true,
       index: true,
     },

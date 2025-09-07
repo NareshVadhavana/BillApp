@@ -1,18 +1,33 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
   <h3>Create Invoice</h3>
-  <a href="/customers/new" class="btn btn-sm btn-secondary">+ Create Customer</a>
+  <!-- <a href="/customers/new" class="btn btn-sm btn-secondary">+ Create Customer</a> -->
+  <button type="button" id="previewInvoice" class="btn btn-info">Preview Invoice</button>
 </div>
+
+<!-- Toast container -->
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999"></div>
 
 <form id="invoiceForm" action="/invoices/create" method="POST">
   <!-- Invoice Info -->
   <div class="row mb-3">
     <div class="col-md-4">
       <label class="form-label">Invoice #</label>
-      <input type="text" name="invoiceNumber" value="<%= nextInvoiceNumber %>" class="form-control" readonly>
+      <input
+        type="text"
+        name="invoiceNumber"
+        value="<%= nextInvoiceNumber %>"
+        class="form-control"
+        readonly
+      />
     </div>
     <div class="col-md-4">
       <label class="form-label">Issue Date</label>
-      <input type="date" name="invoiceIssueDate" value="<%= new Date().toISOString().slice(0,10) %>" class="form-control">
+      <input
+        type="date"
+        name="invoiceIssueDate"
+        value="<%= new Date().toISOString().slice(0,10) %>"
+        class="form-control"
+      />
     </div>
   </div>
 
@@ -20,16 +35,22 @@
   <div class="row mb-3">
     <div class="col-md-4">
       <label class="form-label">Customer Phone</label>
-      <input type="text" id="customerPhone" name="customerPhoneNumber" class="form-control" placeholder="Search phone...">
+      <input
+        type="text"
+        id="customerPhone"
+        name="customerPhoneNumber"
+        class="form-control"
+        placeholder="Search phone..."
+      />
       <div id="customerDropdown" class="list-group"></div>
     </div>
     <div class="col-md-4">
       <label class="form-label">Customer Name</label>
-      <input type="text" id="customerName" name="customerName" class="form-control">
+      <input type="text" id="customerName" name="customerName" class="form-control" />
     </div>
     <div class="col-md-4">
       <label class="form-label">Customer Address</label>
-      <input type="text" id="customerAddress" name="customerAddress" class="form-control">
+      <input type="text" id="customerAddress" name="customerAddress" class="form-control" />
     </div>
   </div>
 
@@ -40,25 +61,30 @@
       <div class="row mb-2">
         <div class="col-md-6">
           <label class="form-label">Item Name</label>
-          <input type="text" name="items[0][itemName]" class="form-control">
+          <input type="text" name="items[0][itemName]" class="form-control" />
         </div>
         <div class="col-md-6">
           <label class="form-label">Description</label>
-          <input type="text" name="items[0][description]" class="form-control">
+          <input type="text" name="items[0][description]" class="form-control" />
         </div>
       </div>
       <div class="row align-items-end">
         <div class="col-md-3">
           <label class="form-label">Price</label>
-          <input type="number" name="items[0][unitPrice]" class="form-control price" step="0.01">
+          <input type="number" name="items[0][unitPrice]" class="form-control price" step="0.01" />
         </div>
         <div class="col-md-3">
           <label class="form-label">Quantity</label>
-          <input type="number" name="items[0][quantity]" class="form-control qty">
+          <input type="number" name="items[0][quantity]" class="form-control qty" />
         </div>
         <div class="col-md-3">
           <label class="form-label">Total</label>
-          <input type="number" name="items[0][itemTotalPrice]" class="form-control itemTotal" readonly>
+          <input
+            type="number"
+            name="items[0][itemTotalPrice]"
+            class="form-control itemTotal"
+            readonly
+          />
         </div>
         <div class="col-md-3 text-end">
           <button type="button" class="btn btn-danger mt-4 removeItem">Remove</button>
@@ -73,31 +99,31 @@
   <div class="row mt-4">
     <div class="col-md-2">
       <label class="form-label">Subtotal</label>
-      <input type="number" name="subTotal" id="subTotal" class="form-control" readonly>
+      <input type="number" name="subTotal" id="subTotal" class="form-control" readonly />
     </div>
     <div class="col-md-2">
       <label class="form-label">SGST (9%)</label>
-      <input type="number" name="sgstTax" id="sgstTax" class="form-control" value="0">
+      <input type="text" name="sgstTax" id="sgstTax" class="form-control" value="0" />
     </div>
     <div class="col-md-2">
       <label class="form-label">CGST (9%)</label>
-      <input type="number" name="cgstTax" id="cgstTax" class="form-control" value="0">
+      <input type="text" name="cgstTax" id="cgstTax" class="form-control" value="0" />
     </div>
     <div class="col-md-2">
       <label class="form-label">Other Tax</label>
-      <input type="number" name="otherTax" id="otherTax" class="form-control" value="0">
+      <input type="number" name="otherTax" id="otherTax" class="form-control" value="0" />
     </div>
     <div class="col-md-2">
       <label class="form-label">Total Tax</label>
-      <input type="number" name="totalTax" id="totalTax" class="form-control" readonly>
+      <input type="number" name="totalTax" id="totalTax" class="form-control" readonly />
     </div>
     <div class="col-md-2">
       <label class="form-label">Discount</label>
-      <input type="number" name="discount" id="discount" class="form-control" value="0">
+      <input type="number" name="discount" id="discount" class="form-control" value="0" />
     </div>
     <div class="col-md-3 mt-3">
       <label class="form-label">Grand Total</label>
-      <input type="number" name="grandTotal" id="grandTotal" class="form-control" readonly>
+      <input type="number" name="grandTotal" id="grandTotal" class="form-control" readonly />
     </div>
   </div>
 
@@ -108,13 +134,15 @@
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add Bootstrap JS for toast support -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-$(document).ready(function() {
-  let itemIndex = 1;
+  $(document).ready(function () {
+    let itemIndex = 1;
 
-  // Add new item row
-  $('#addItem').click(function() {
-    $('#itemsBody').append(`
+    // Add new item row
+    $('#addItem').click(function () {
+      $('#itemsBody').append(`
       <div class="card mb-3 p-3 item-row">
         <div class="row mb-2">
           <div class="col-md-6">
@@ -145,80 +173,131 @@ $(document).ready(function() {
         </div>
       </div>
     `);
-    itemIndex++;
-  });
-
-  // Remove item row
-  $(document).on('click', '.removeItem', function() {
-    $(this).closest('.item-row').remove();
-    calculateTotals();
-  });
-
-  // Auto calculate totals
-  $(document).on('input', '.price, .qty, #sgstTax, #cgstTax, #otherTax, #discount', function() {
-    calculateTotals();
-  });
-
-  function calculateTotals() {
-    let subtotal = 0;
-
-    $('#itemsBody .item-row').each(function() {
-      let price = parseFloat($(this).find('.price').val()) || 0;
-      let qty = parseFloat($(this).find('.qty').val()) || 0;
-      let total = price * qty;
-      $(this).find('.itemTotal').val(total.toFixed(2));
-      subtotal += total;
+      itemIndex++;
     });
 
-    $('#subTotal').val(subtotal.toFixed(2));
+    // Remove item row
+    $(document).on('click', '.removeItem', function () {
+      $(this).closest('.item-row').remove();
+      calculateTotals();
+    });
 
-    let sgst = subtotal * 0.09;
-    let cgst = subtotal * 0.09;
+    // Auto calculate totals
+    $(document).on('input', '.price, .qty, #sgstTax, #cgstTax, #otherTax, #discount', function () {
+      calculateTotals();
+    });
 
-    $('#sgstTax').val(sgst.toFixed(2));
-    $('#cgstTax').val(cgst.toFixed(2));
+    function calculateTotals() {
+      let subtotal = 0;
 
-    let otherTax = parseFloat($('#otherTax').val()) || 0;
-    let discount = parseFloat($('#discount').val()) || 0;
+      $('#itemsBody .item-row').each(function () {
+        let price = parseFloat($(this).find('.price').val()) || 0;
+        let qty = parseFloat($(this).find('.qty').val()) || 0;
+        let total = price * qty;
+        $(this).find('.itemTotal').val(total.toFixed(2));
+        subtotal += total;
+      });
 
-    let totalTax = sgst + cgst + otherTax;
-    $('#totalTax').val(totalTax.toFixed(2));
+      $('#subTotal').val(subtotal.toFixed(2));
 
-    let grandTotal = subtotal + totalTax - discount;
-    $('#grandTotal').val(grandTotal.toFixed(2));
-  }
+      let sgst = subtotal * 0.09;
+      let cgst = subtotal * 0.09;
 
-  // Customer search (AJAX demo)
-  $('#customerPhone').on('input', function() {
-    let query = $(this).val();
-    if(query.length > 2) {
-      $.get(`/customers/search?phone=${query}`, function(data) {
-        $('#customerDropdown').empty();
-        data.forEach(c => {
-          $('#customerDropdown').append(
-            `<a href="#" class="list-group-item list-group-item-action" 
+      $('#sgstTax').val(sgst.toFixed(2));
+      $('#cgstTax').val(cgst.toFixed(2));
+
+      let otherTax = parseFloat($('#otherTax').val()) || 0;
+      let discount = parseFloat($('#discount').val()) || 0;
+
+      let totalTax = sgst + cgst + otherTax;
+      $('#totalTax').val(totalTax.toFixed(2));
+
+      let grandTotal = subtotal + totalTax - discount;
+      $('#grandTotal').val(grandTotal.toFixed(2));
+    }
+
+    // Customer search (AJAX demo)
+    $('#customerPhone').on('input', function () {
+      let query = $(this).val();
+      if (query.length > 2) {
+        $.get(`/customers/search?phone=${query}`, function (data) {
+          $('#customerDropdown').empty();
+          data.forEach((c) => {
+            $('#customerDropdown').append(
+              `<a href="#" class="list-group-item list-group-item-action" 
               data-id="${c._id}" 
               data-name="${c.name}" 
               data-address="${c.address}" 
-              data-phone="${c.phone}">
-                ${c.phone} - ${c.name}
-             </a>`
-          );
+              data-phone="${c.phone}">${c.phone} - ${c.name}</a>`
+            );
+          });
+        });
+      }
+    });
+
+    $(document).on('click', '#customerDropdown a', function (e) {
+      e.preventDefault();
+      $('#customerPhone').val($(this).data('phone'));
+      $('#customerName').val($(this).data('name'));
+      $('#customerAddress').val($(this).data('address'));
+      $('#customerDropdown').empty();
+    });
+
+    // --- AJAX form submission ---
+    $('#invoiceForm').submit(function (e) {
+      e.preventDefault();
+      const form = $(this);
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        success: function (res) {
+          showToast('success', res.message || 'Invoice created successfully');
+          setTimeout(() => {
+            window.location.href = '/invoices/' + res.invoiceId;
+          }, 800); // 0.8 second delay
+        },
+        error: function (xhr) {
+          const res = xhr.responseJSON;
+          if (res && res.errors) {
+            res.errors.forEach((err) => showToast('error', `${err.param}: ${err.msg}`));
+          } else {
+            showToast('error', res.message || 'Server error');
+          }
+        },
+      });
+    });
+
+    // preview feature
+    $('#previewInvoice').click(function () {
+      const invoice = {
+        invoiceNumber: $('input[name="invoiceNumber"]').val(),
+        invoiceIssueDate: $('input[name="invoiceIssueDate"]').val(),
+        customerName: $('#customerName').val(),
+        customerAddress: $('#customerAddress').val(),
+        customerPhoneNumber: $('#customerPhone').val(),
+        items: [],
+        subTotal: parseFloat($('#subTotal').val()) || 0,
+        totalTax: parseFloat($('#totalTax').val()) || 0,
+        discount: parseFloat($('#discount').val()) || 0,
+        grandTotal: parseFloat($('#grandTotal').val()) || 0,
+        companyId: {
+          companyName: 'Your Company',
+          companyAddress: 'Your Address',
+          companyPhoneNumber: 'Your Phone',
+        },
+      };
+
+      $('#itemsBody .item-row').each(function () {
+        invoice.items.push({
+          itemName: $(this).find('input[name*="[itemName]"]').val(),
+          quantity: parseFloat($(this).find('.qty').val()) || 0,
+          unitPrice: parseFloat($(this).find('.price').val()) || 0,
         });
       });
-    }
-  });
+    });
 
-  // Select customer from dropdown
-  $(document).on('click', '#customerDropdown a', function(e) {
-    e.preventDefault();
-    $('#customerPhone').val($(this).data('phone'));
-    $('#customerName').val($(this).data('name'));
-    $('#customerAddress').val($(this).data('address'));
-    $('#customerDropdown').empty();
+    // Initial calculation
+    calculateTotals();
   });
-
-  // Initial totals calc
-  calculateTotals();
-});
 </script>
