@@ -35,6 +35,10 @@ const ItemSchema = new mongoose.Schema(
 
 const InvoiceSchema = new mongoose.Schema(
   {
+    uuid: {
+      type: String,
+      required: true,
+    },
     invoiceNumber: {
       type: Number,
       required: true,

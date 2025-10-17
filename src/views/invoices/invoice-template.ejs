@@ -1,4 +1,4 @@
-<div class="invoice-preview-wrapper">
+<div id="invoicePreview" class="invoice-preview-wrapper">
   <div class="invoice-preview-content">
     <div class="container my-3" style="max-width: 800px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); font-size: 0.95rem;">
       <!-- Invoice Header -->
@@ -10,7 +10,8 @@
         </div>
         <div>
           <% if(invoice.companyId?.logoImage){ %>
-            <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 60px;">
+            <!-- <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 60px;"> -->
+             <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 60px;">
           <% } %>
         </div>
       </div>
@@ -91,8 +92,70 @@
 
       <!-- Footer -->
       <div class="text-center text-muted" style="font-size: 0.85rem;">
-        <small><%= invoice.companyId?.companyName ?? 'Your Company' %>, Your Country | (+62) 823-4567-8901</small>
+        <small><%= invoice.companyId?.companyName ?? 'A to Z Mobile' %> | <%= invoice.companyId?.companyPhoneNumber ?? '' %></small>
       </div>
     </div>
   </div>
 </div>
+
+<div class="d-flex justify-content-center mb-3">
+  <button type="button" id="download-pdf" data-invoice-id="<%= invoice._id %>" class="btn btn-success">
+    <span id="download-text">Download</span>
+    <span id="download-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+  </button>
+</div>
+
+<input type="hidden" id="invoiceId" value="<%= invoice._id %>" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Add Bootstrap JS for toast support -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#download-pdf').on('click', async function () {
+      const $btn = $(this);
+      const invoiceHtml = document.getElementById('invoicePreview').innerHTML;
+      const invoiceId = document.getElementById('invoiceId').value; // get invoice ID
+
+      if (!invoiceHtml) return alert('Invoice data missing.');
+
+      // Show loader
+      $btn.prop('disabled', true);
+      $('#download-text').text('Downloading...');
+      $('#download-spinner').removeClass('d-none');
+
+      try {
+        const res = await fetch('/invoices/pdf/download', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ html: invoiceHtml, invoiceId })
+        });
+
+        const disposition = res.headers.get('Content-Disposition');
+        let fileName = `Invoice_${new Date().toISOString().slice(0,10)}.pdf`; // fallback
+        if (disposition && disposition.includes('filename=')) {
+          fileName = disposition.split('filename=')[1].replace(/"/g, '').trim();
+        }
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+      } catch (err) {
+        console.error(err);
+        alert('Failed to download PDF');
+      } finally {
+        // Hide loader
+        $btn.prop('disabled', false);
+        $('#download-text').text('Download');
+        $('#download-spinner').addClass('d-none');
+      }
+    });
+  });
+</script>

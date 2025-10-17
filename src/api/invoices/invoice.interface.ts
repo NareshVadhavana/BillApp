@@ -17,6 +17,7 @@ export interface InvoiceItemI {
 
 export interface InvoiceI {
   _id: string;
+  uuid: string;
   invoiceNumber: string;
   invoiceIssueDate: Date;
   companyId: CompanyProfileI;
