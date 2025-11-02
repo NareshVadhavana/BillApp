@@ -259,6 +259,11 @@ class InvoicessController implements ControllerI {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
       const page = await browser.newPage();
+
+      // Increase timeout (default is 30,000 ms)
+      page.setDefaultNavigationTimeout(120000); // 2 minutes
+      page.setDefaultTimeout(120000); // optional: for all waits
+
       await page.setContent(fullHtml, { waitUntil: 'networkidle0' });
 
       const pdfBuffer = await page.pdf({
