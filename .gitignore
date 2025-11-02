@@ -13,3 +13,5 @@ logs/
 
 # VS code folders
 .vscode/
+
+.cache/
