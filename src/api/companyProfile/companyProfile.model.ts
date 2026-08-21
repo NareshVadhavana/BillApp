@@ -17,6 +17,9 @@ const companyProfileSchema = new mongoose.Schema(
     companyPhoneNumber: {
       type: String,
     },
+    gstNumber: {
+      type: String,
+    },
     termsAndConditions: {
       type: String,
     },

@@ -34,9 +34,10 @@ $(document).ready(function () {
       discount: parseFloat($('#discount').val()) || 0,
       grandTotal: parseFloat($('#grandTotal').val()) || 0,
       companyId: {
-        companyName: 'Your Company',
-        companyAddress: 'Your Address',
-        companyPhoneNumber: 'Your Phone',
+        companyName: 'A to Z Mobile',
+        companyAddress: 'Uji Nivas, Kumudwadi, Bhavnagar',
+        companyPhoneNumber: '9277202198',
+        gstNumber: '24CSBPD1787J2ZQ',
       },
     };
 

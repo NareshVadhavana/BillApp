@@ -11,7 +11,7 @@
         <div>
           <% if(invoice.companyId?.logoImage){ %>
             <!-- <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 60px;"> -->
-             <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 60px;">
+             <img src="<%= invoice.companyId.logoImage %>" alt="Logo" style="height: 70px;">
           <% } %>
         </div>
       </div>
@@ -92,7 +92,7 @@
 
       <!-- Footer -->
       <div class="text-center text-muted" style="font-size: 0.85rem;">
-        <small><%= invoice.companyId?.companyName ?? 'A to Z Mobile' %> | <%= invoice.companyId?.companyPhoneNumber ?? '' %></small>
+        <small><%= invoice.companyId?.companyName ?? 'A to Z Mobile' %> | <%= invoice.companyId?.companyPhoneNumber ?? '' %> | GSTIN <%=invoice.companyId?.gstNumber ?? ''%></small>
       </div>
     </div>
   </div>

@@ -114,7 +114,8 @@ class InvoicessController implements ControllerI {
         query: { _id: req.params.id },
         populate: {
           path: 'companyId',
-          select: 'companyName logoImage termsAndConditions companyAddress companyPhoneNumber',
+          select:
+            'companyName logoImage termsAndConditions companyAddress companyPhoneNumber gstNumber',
         },
       });
 

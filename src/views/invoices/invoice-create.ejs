@@ -200,8 +200,8 @@
 
       $('#subTotal').val(subtotal.toFixed(2));
 
-      let sgst = subtotal * 0.09;
-      let cgst = subtotal * 0.09;
+      let sgst = subtotal * 0.09 * 0; // multiply by zero to no sgst
+      let cgst = subtotal * 0.09 * 0; // multiply by zero to no cgst
 
       $('#sgstTax').val(sgst.toFixed(2));
       $('#cgstTax').val(cgst.toFixed(2));
@@ -282,9 +282,10 @@
         discount: parseFloat($('#discount').val()) || 0,
         grandTotal: parseFloat($('#grandTotal').val()) || 0,
         companyId: {
-          companyName: 'Your Company',
-          companyAddress: 'Your Address',
-          companyPhoneNumber: 'Your Phone',
+          companyName: 'A to Z Mobile',
+          companyAddress: 'Uji Nivas, Kumudwadi, Bhavnagar',
+          companyPhoneNumber: '9277202198',
+          gstNumber: '24CSBPD1787J2ZQ',
         },
       };
 
