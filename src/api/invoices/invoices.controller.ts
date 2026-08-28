@@ -36,7 +36,10 @@ class InvoicessController implements ControllerI {
 
   private list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const invoices = await MongoService.find(InvoiceModel, { query: {} });
+      const invoices = await MongoService.find(InvoiceModel, {
+        query: {},
+        sort: { createdAt: -1 },
+      });
 
       res.render('invoices/invoice-list', {
         // <-- folder name + file name
