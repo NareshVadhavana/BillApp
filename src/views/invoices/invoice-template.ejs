@@ -25,6 +25,7 @@
           <p style="margin-bottom: 3px;"><strong><%= invoice.companyId?.companyName ?? 'Your Company' %></strong></p>
           <p style="margin-bottom: 3px;"><%= invoice.companyId?.companyAddress ?? '' %></p>
           <p style="margin-bottom: 3px;"><%= invoice.companyId?.companyPhoneNumber ?? '' %></p>
+          <p style="margin-bottom: 3px;"> GSTIN:  <%= invoice.companyId?.gstNumber ??  '' %></p>
         </div>
         <div class="col-md-6">
           <h6 style="margin-bottom: 5px;">Billed To:</h6>
@@ -39,25 +40,49 @@
       <!-- Items Table -->
       <div class="mb-3">
         <h6 style="margin-bottom: 8px;">Invoice Details</h6>
-        <table class="table table-sm table-bordered mb-0">
+        <table class="table table-sm table-bordered mb-0" style="width: 100%; table-layout: fixed;">
+          <colgroup>
+            <col style="width: 30%;">
+            <col style="width: 30%;">
+            <col style="width: 10%;">
+            <col style="width: 15%;">
+            <col style="width: 15%;">
+          </colgroup>
+
           <thead class="table-light">
             <tr>
               <th>Item</th>
+              <th>Description</th>
               <th class="text-end">Qty</th>
               <th class="text-end">Unit Price</th>
               <th class="text-end">Total</th>
             </tr>
           </thead>
+
           <tbody>
             <% invoice.items.forEach(item => { %>
               <tr>
                 <td><%= item.itemName ?? '' %></td>
-                <td class="text-end"><%= item.quantity ?? 0 %></td>
-                <td class="text-end"><%= (item.unitPrice ?? 0).toFixed(2) %></td>
-                <td class="text-end"><%= ((item.unitPrice ?? 0) * (item.quantity ?? 0)).toFixed(2) %></td>
+
+                <td style="word-wrap: break-word;">
+                  <%= item.description ?? '' %>
+                </td>
+
+                <td class="text-end">
+                  <%= item.quantity ?? 0 %>
+                </td>
+
+                <td class="text-end">
+                  <%= (item.unitPrice ?? 0).toFixed(2) %>
+                </td>
+
+                <td class="text-end">
+                  <%= ((item.unitPrice ?? 0) * (item.quantity ?? 0)).toFixed(2) %>
+                </td>
               </tr>
             <% }) %>
           </tbody>
+
         </table>
       </div>
 
@@ -83,8 +108,12 @@
       <div style="background: #f8f9fa; padding: 10px; border-radius: 5px;">
         <h6 style="margin-bottom: 5px;">Notes</h6>
         <ul style="padding-left: 20px; margin-bottom: 0;">
-          <li>Payment is due by <%= new Date(invoice.invoiceIssueDate).toLocaleString('default', { month: 'long', year: 'numeric' }) %>.</li>
-          <li>Include the invoice number in the payment reference for accurate processing.</li>
+          <li>Goods once sold can not be taken back or exchanged.</li>
+          <li>Once a bill is generated, it will not be amended.</li>
+          <li>For Service Repair, Any Manufacturing Defects, contact respective service centres.</li>
+          <li>MISUSE/WATER DAMAGE/BREAKAGE IS NOT COVERED UNDER WARRANTY.</li>
+          <li>No warranty Or Guarantee On electronic product.</li>
+          <li>We Declare That Invoice Shows The Actual Price Of The Goods Described And That All particulars Are True And Correct.</li>
         </ul>
       </div>
 
@@ -92,7 +121,7 @@
 
       <!-- Footer -->
       <div class="text-center text-muted" style="font-size: 0.85rem;">
-        <small><%= invoice.companyId?.companyName ?? 'A to Z Mobile' %> | <%= invoice.companyId?.companyPhoneNumber ?? '' %> | GSTIN <%=invoice.companyId?.gstNumber ?? ''%></small>
+        <small><%= invoice.companyId?.companyName ?? 'A to Z Mobile' %> | <%= invoice.companyId?.companyPhoneNumber ?? '' %> </small>
       </div>
     </div>
   </div>

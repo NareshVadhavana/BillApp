@@ -45,6 +45,7 @@ $(document).ready(function () {
     $('#itemsBody .item-row').each(function () {
       invoice.items.push({
         itemName: $(this).find('input[name*="[itemName]"]').val(),
+        description: $(this).find('input[name*="[description]"]').val(),
         quantity: parseFloat($(this).find('.qty').val()) || 0,
         unitPrice: parseFloat($(this).find('.price').val()) || 0,
       });
